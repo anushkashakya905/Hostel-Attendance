@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Students - Hostel Attendance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ===== SAME CSS AS DASHBOARD ===== */
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#f4f6fb;
+}
+
+.topbar{
+    background:linear-gradient(90deg, #5f7a5f);
+    color:white;
+    padding:15px 25px;
+    font-size:20px;
+}
+
+.container{
+    display:flex;
+}
+
+.sidebar{
+    width:230px;
+    background:linear-gradient(180deg, #5f7a5f);
+    min-height:100vh;
+    color:white;
+}
+
+.sidebar a{
+    display:block;
+    padding:15px 20px;
+    color:white;
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:rgba(255,255,255,.15);
+}
+
+.main{
+    flex:1;
+    padding:25px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 8px rgba(0,0,0,.1);
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+input{
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#5f7a5f;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#5f7a5f;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">🏨 Hostel Biometric Attendance System</div>
+
+<div class="container">
+
+<div class="sidebar">
+    <a href="dashboard.html">🏠 Dashboard</li>
+    <a href="student.html" > 👩‍🎓 Students</a>
+    <a href="attendance.html">📊 Attendance Status</a>
+    <a href="absentee.html"class="active">📖 Absentee List</a>
+    <a href="late.html">⏰ Late Entry</a>
+    <a href="leave.html">📝 Leave Entries</a>
+    <a href="report.html"></i>📈 Monthly Report</a>
+</div>
+
+<div class="main">
+
+<div class="card">
+
+    <h2>Absentee List</h2>
+
+    <div style="display:flex; gap:10px; margin-bottom:15px;">
+        <input type="date" id="date">
+        <button onclick="loadAbsentees()">Search</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Roll No.</th>
+                <th>Name</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="tableData"></tbody>
+    </table>
+
+</div>
+</div>
+
+<script>
+
+const students = [
+    {roll:"21CS045", name:"Anushka Shakya", room:"G-203", time:"8:10 PM"},
+    {roll:"21CS067", name:"Neha Gupta", room:"G-215", time:"9:05 PM"},
+    {roll:"21CS073", name:"Pooja Sharma", room:"G-311", time:null},
+    {roll:"21CS032", name:"Riya Verma", room:"G-110", time:null}
+];
+
+function timeToMinutes(t){
+    if(!t) return null;
+    let [time,ampm]=t.split(" ");
+    let [h,m]=time.split(":");
+    h=parseInt(h); 
+    m=parseInt(m);
+    if(ampm==="PM" && h!==12) h+=12;
+    return h*60+m;
+}
+
+function loadAbsentees(){
+    let tbody=document.getElementById("tableData");
+    tbody.innerHTML="";
+
+    const cutoff = timeToMinutes("9:00 PM");
+
+    students.forEach(s=>{
+
+        let mins = timeToMinutes(s.time);
+
+        // Only students with NO ENTRY till 9 PM
+        if(mins !== null && mins <= cutoff) return;
+
+        // If marked after 9 PM, ignore
+        if(mins !== null && mins > cutoff) return;
+
+        // Only ABSENT students
+        tbody.innerHTML += `
+            <tr>
+                <td>${s.roll}</td>
+                <td>${s.name}</td>
+                <td>${s.room}</td>
+                <td><span class="badge absent">Absent</span></td>
+                <td>--</td>
+            </tr>
+        `;
+    });
+}
+
+loadAbsentees();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Students - Hostel Attendance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ===== SAME CSS AS DASHBOARD ===== */
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#f4f6fb;
+}
+
+.topbar{
+    background:linear-gradient(90deg, #5f7a5f);
+    color:white;
+    padding:15px 25px;
+    font-size:20px;
+}
+
+.container{
+    display:flex;
+}
+
+.sidebar{
+    width:230px;
+    background:linear-gradient(180deg, #5f7a5f);
+    min-height:100vh;
+    color:white;
+}
+
+.sidebar a{
+    display:block;
+    padding:15px 20px;
+    color:white;
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:rgba(255,255,255,.15);
+}
+
+.main{
+    flex:1;
+    padding:25px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 8px rgba(0,0,0,.1);
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+input{
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#5f7a5f;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+table{
+    width:200%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#5f7a5f;
+    color:white;
+}
+.present{background:#28a745;}
+.late{background:#efe81c;}
+.absent{background:#e3400e;}
+
+@media(max-width:768px){
+    table{font-size:13px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">🏨 Hostel Biometric Attendance System</div>
+
+<div class="container">
+
+<div class="sidebar">
+    <a href="dashboard.html">🏠 Dashboard</li>
+    <a href="student.html" > 👩‍🎓 Students</a>
+    <a href="attendance.html" class="active">📊 Attendance Status</a>
+    <a href="absentee.html">📖 Absentee List</a>
+    <a href="late.html">⏰ Late Entry</a>
+    <a href="leave.html">📝 Leave Entries</a>
+    <a href="report.html"></i>📈 Monthly Report</a>
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Attendance Status</h2>
+
+<div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search by Name / Roll No / Room / Status...">
+</div>
+
+<table id="attendanceTable">
+<thead>
+<tr>
+<th>Roll No</th>
+<th>Name</th>
+<th>Room</th>
+<th>Status</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+<td>21CS045</td>
+<td>Anushka Shakya</td>
+<td>G-203</td>
+<td><span class="status present">Present</span></td>
+<td>8:45 PM</td>
+</tr>
+
+<tr>
+<td>21CS067</td>
+<td>Neha Gupta</td>
+<td>G-215</td>
+<td><span class="status late">Late</span></td>
+<td>9:12 PM</td>
+</tr>
+
+<tr>
+<td>21CS073</td>
+<td>Pooja Sharma</td>
+<td>G-311</td>
+<td><span class="status absent">Absent</span></td>
+<td>-</td>
+</tr>
+
+<tr>
+<td>21CS032</td>
+<td>Riya Verma</td>
+<td>G-110</td>
+<td><span class="status present">Present</span></td>
+<td>8:30 PM</td>
+</tr>
+
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+const searchInput = document.getElementById("searchInput");
+const tableRows = document.querySelectorAll("#attendanceTable tbody tr");
+
+searchInput.addEventListener("keyup", function(){
+    const value = this.value.toLowerCase();
+
+    tableRows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(value) ? "" : "none";
+    });
+});
+</script>
+
+</body>
+</html>

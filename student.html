@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Students - Hostel Attendance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ===== SAME CSS AS DASHBOARD ===== */
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#f4f6fb;
+}
+
+.topbar{
+    background:linear-gradient(90deg, #5f7a5f);
+    color:white;
+    padding:15px 25px;
+    font-size:20px;
+}
+
+.container{
+    display:flex;
+}
+
+.sidebar{
+    width:230px;
+    background:linear-gradient(180deg, #5f7a5f);
+    min-height:100vh;
+    color:white;
+}
+
+.sidebar a{
+    display:block;
+    padding:15px 20px;
+    color:white;
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:rgba(255,255,255,.15);
+}
+
+.main{
+    flex:1;
+    padding:25px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 8px rgba(0,0,0,.1);
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+input{
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#5f7a5f;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#5f7a5f;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">🏨 Hostel Biometric Attendance System</div>
+
+<div class="container">
+
+<div class="sidebar">
+    <a href="dashboard.html">🏠 Dashboard</li>
+    <a href="student.html" class="active"> 👩‍🎓 Students</a>
+    <a href="attendance.html">📊 Attendance Status</a>
+    <a href="absentee.html">📖 Absentee List</a>
+    <a href="late.html">⏰ Late Entry</a>
+    <a href="leave.html">📝 Leave Entries</a>
+    <a href="report.html"></i>📈 Monthly Report</a>
+</div>
+
+<!-- ===== ONLY MAIN CONTENT CHANGES ===== -->
+
+<div class="main">
+
+<h2>Student Management</h2>
+
+<div class="card">
+<h3>Add / Edit Student</h3>
+
+<div class="form-grid">
+<input id="roll" placeholder="Roll Number">
+<input id="name" placeholder="Student Name">
+<input id="room" placeholder="Room Number">
+<input id="department" placeholder="Department">
+<input id="school" placeholder="School">
+<input id="semester" placeholder="Semester">
+<input id="dob" placeholder="Date of birth">
+<input id="address" placeholder="Address">
+<input id="district" placeholder="District">
+<input id="state" placeholder="State">
+<input id="phone" placeholder="Phone Number">
+<input id="email" placeholder="Student Mail">
+<input id="father" placeholder="Father Name">
+<input id="phone" placeholder="Father Phone">
+<input id="mother" placeholder="Mother Name">
+<input id="phone" placeholder="Mother Phone">
+<input id="guardian" placeholder="Guardian Name">
+<input id="phone" placeholder="Guardian Phone">
+<input id="email" placeholder="Father Mail">
+<input id="email" placeholder="Mother Mail">
+
+</div>
+<br>
+<button onclick="saveStudent()">Save Student</button>
+</div>
+
+<div class="card">
+<h3>Student List</h3>
+
+<table id="table">
+<tr>
+<th>Roll</th>
+<th>Name</th>
+<th>Room</th>
+<th>Phone</th>
+<th>Action</th>
+</tr>
+</table>
+</div>
+
+</div>
+</div>
+
+<script>
+let selectedRow=null;
+
+function saveStudent(){
+    let roll=rollInput();
+    let name=nameInput();
+    let room=roomInput();
+    let phone=phoneInput();
+
+    if(!roll||!name||!room||!phone){
+        alert("Fill all fields");
+        return;
+    }
+
+    if(selectedRow==null){
+        let row=table.insertRow();
+        row.innerHTML=`
+        <td>${roll}</td>
+        <td>${name}</td>
+        <td>${room}</td>
+        <td>${phone}</td>
+        <td>
+        <button onclick="editStudent(this)">Edit</button>
+        <button onclick="deleteStudent(this)">Delete</button>
+        </td>`;
+    } else {
+        selectedRow.cells[0].innerHTML=roll;
+        selectedRow.cells[1].innerHTML=name;
+        selectedRow.cells[2].innerHTML=room;
+        selectedRow.cells[3].innerHTML=phone;
+        selectedRow=null;
+    }
+    clearForm();
+}
+
+function editStudent(btn){
+    selectedRow=btn.parentElement.parentElement;
+    rollInput(selectedRow.cells[0].innerHTML);
+    nameInput(selectedRow.cells[1].innerHTML);
+    roomInput(selectedRow.cells[2].innerHTML);
+    phoneInput(selectedRow.cells[3].innerHTML);
+}
+
+function deleteStudent(btn){
+    if(confirm("Delete this student?")){
+        btn.parentElement.parentElement.remove();
+    }
+}
+
+function clearForm(){
+    rollInput(""); nameInput(""); roomInput(""); phoneInput("");
+}
+
+function rollInput(v){return setVal("roll",v)}
+function nameInput(v){return setVal("name",v)}
+function roomInput(v){return setVal("room",v)}
+function phoneInput(v){return setVal("phone",v)}
+
+function setVal(id,val){
+    let el=document.getElementById(id);
+    if(val!==undefined) el.value=val;
+    return el.value;
+}
+</script>
+
+</body>
+</html>

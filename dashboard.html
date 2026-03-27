@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hostel Attendance Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#f4f6fb;
+}
+
+.topbar{
+    background:linear-gradient(90deg, #5f7a5f);
+    color:white;
+    padding:15px 25px;
+    font-size:20px;
+}
+
+.container{
+    display:flex;
+}
+
+.sidebar{
+    width:230px;
+    background:linear-gradient(180deg, #5f7a5f);
+    min-height:100vh;
+    color:white;
+}
+
+.sidebar a{
+    display:block;
+    padding:15px 20px;
+    color:white;
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+    background:rgba(255,255,255,.15);
+}
+
+
+.main{
+    flex:1;
+    padding:25px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:15px;
+}
+
+.card{
+    padding:20px;
+    border-radius:10px;
+    color:white;
+    font-size:18px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.blue{background:#2196f3;}
+.green{background:#43a047;}
+.red{background:#e53935;}
+.orange{background:#fb8c00;}
+
+.chart-box{
+    background:white;
+    margin-top:20px;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 8px rgba(0,0,0,.1);
+}
+
+.alert{
+    margin-top:10px;
+    background:#ffe6e6;
+    padding:12px;
+    border-radius:8px;
+    color:#b71c1c;
+    font-weight:600;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background: #5f7a5f;
+    color:white;
+}
+
+@media(max-width:900px){
+    .cards{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">🏨 Hostel Biometric Attendance System</div>
+
+<div class="container">
+
+    <div class="sidebar">
+    <a href="dashboard.html" class="active">🏠 Dashboard</li>
+    <a href="student.html"> 👩‍🎓 Students</a>
+    <a href="attendance.html">📊 Attendance Status</a>
+    <a href="absentee.html">📖 Absentee List</a>
+    <a href="late.html">⏰ Late Entry</a>
+    <a href="leave.html">📝 Leave Entries</a>
+    <a href="report.html"></i>📈 Monthly Report</a>
+</div>
+
+
+    <div class="main">
+
+        <h2>Dashboard</h2>
+
+        <div class="cards">
+            <div class="card blue">Total Students<br>0</div>
+            <div class="card green" id="presentCount">Present Students<br>0</div>
+            <div class="card red">Absent Students<br>0</div>
+            <div class="card orange">Leave Students<br>0</div>
+        </div>
+
+        <div class="chart-box">
+            <h3>Attendance Growth Report</h3>
+            <canvas id="attendanceChart"></canvas>
+
+            <div class="alert">
+                ⚠ Alert: 13 students absent after 9 PM
+            </div>
+        </div>
+
+        <table id="attendanceTable">
+            <tr>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>Room</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Remark</th>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+<script>
+let totalPresent = 0;
+
+const timeLabels = [];
+const cumulativeData = [];
+
+const ctx = document.getElementById('attendanceChart').getContext('2d');
+
+const attendanceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: timeLabels,
+        datasets: [{
+            label: 'Total Students Marked Attendance',
+            data: cumulativeData,
+            borderWidth: 3,
+            tension: 0.4,
+            fill: true,
+            pointRadius: 5
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: { title: { display: true, text: 'Time' } },
+            y: { beginAtZero: true, title: { display: true, text: 'Total Students' } }
+        }
+    }
+});
+
+// ================== Mark Attendance ==================
+function markAttendance(student){
+
+    const now = new Date();
+    const time = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+    totalPresent++;
+
+    document.getElementById("presentCount").innerHTML =
+        "Present Students<br>" + totalPresent;
+
+    timeLabels.push(time);
+    cumulativeData.push(totalPresent);
+    attendanceChart.update();
+
+    const table = document.getElementById("attendanceTable");
+    const row = table.insertRow(1);
+
+    row.innerHTML = `
+        <td>${student.roll}</td>
+        <td>${student.name}</td>
+        <td>${student.room}</td>
+        <td>${now.toLocaleDateString()}</td>
+        <td>${time}</td>
+        <td>Present</td>
+    `;
+}
+
+// ================== Demo Simulation ==================
+const demoStudents = [
+    {roll:'21CS046', name:'Riya Verma', room:'G-204'},
+    {roll:'21CS047', name:'Pooja Singh', room:'G-205'},
+    {roll:'21CS048', name:'Neha Sharma', room:'G-206'},
+    {roll:'21CS049', name:'Anjali Gupta', room:'G-207'},
+    {roll:'21CS050', name:'Kajal Yadav', room:'G-208'},
+    {roll:'21CS051', name:'Komal Chauhan', room:'G-209'}
+];
+
+let i = 0;
+
+setInterval(()=>{
+    if(i < demoStudents.length){
+        markAttendance(demoStudents[i]);
+        i++;
+    }
+}, 3000);   // New attendance every 3 seconds
+</script>
+
+</body>
+</html>

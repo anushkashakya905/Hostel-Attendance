@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Leave Entries - Hostel Attendance</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+*
+body{
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#f4f6fb;
+}
+
+/* ===== TOP HEADER ===== */
+
+.topbar{
+    background:linear-gradient(90deg, #5f7a5f);
+    color:white;
+    padding:15px 25px;
+    font-size:20px;
+}
+
+/* ===== MAIN LAYOUT ===== */
+
+.container{
+    display:flex;
+    min-height:calc(100vh - 60px);
+}
+
+/* ===== SIDEBAR ===== */
+
+.sidebar{
+    width:230px;
+    background:linear-gradient(180deg, #5f7a5f);
+    min-height:100vh;
+    color:white;
+}
+
+.sidebar a{
+    display:block;
+    padding:15px 20px;
+    color:white;
+    text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+   background:rgba(255,255,255,.15);
+}
+
+/* ===== MAIN CONTENT ===== */
+
+.main{
+    flex:1;
+    padding:25px;
+}
+
+.card{
+    background:white;
+    border-radius:10px;
+    padding:25px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom:25px;
+}
+
+/* ===== FORM GRID ===== */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+input{
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+
+/* ===== BUTTON ===== */
+
+.btn{
+    background:#4d7c4d;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:6px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:#3f6a3f;
+}
+
+/* ===== TABLE ===== */
+
+.table-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.table-head input{
+    padding:7px 10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+    font-size:14px;
+}
+
+th{
+    background:#6e8f6e;
+    color:white;
+}
+
+.badge{
+    padding:5px 12px;
+    border-radius:12px;
+    color:white;
+    font-size:13px;
+}
+
+.home{ background:#3498db; }
+.medical{ background:#2ecc71; }
+.emergency{ background:#e74c3c; }
+
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    🏨 Hostel Biometric Attendance System
+</div>
+
+<div class="container">
+
+    <div class="sidebar">
+    <a href="dashboard.html">🏠 Dashboard</li>
+    <a href="student.html" > 👩‍🎓 Students</a>
+    <a href="attendance.html">📊 Attendance Status</a>
+    <a href="absentee.html">📖 Absentee List</a>
+    <a href="late.html">⏰ Late Entry</a>
+    <a href="leave.html" class="active">📝 Leave Entries</a>
+    <a href="report.html"></i>📈 Monthly Report</a>
+</div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- LEAVE FORM -->
+        <div class="card">
+            <h2>Leave Entries</h2>
+
+            <form id="leaveForm">
+                <div class="form-grid">
+                    <input type="text" id="name" placeholder="Student Name" required>
+                    <input type="text" id="roll" placeholder="Roll Number" required>
+                    <input type="text" id="room" placeholder="Room Number" required>
+                    <input type="text" id="phone" placeholder="Phone Number" required>
+                    <input type="date" id="startDate" placeholder="Start date" required>
+                    <input type="date" id="endDate" required>
+
+                    <select id="leaveType" required>
+                        <option value="">Select Leave Type</option>
+                        <option value="Home">Home Leave</option>
+                        <option value="Medical">Medical Leave</option>
+                        <option value="Emergency">Emergency Leave</option>
+                    </select>
+
+                    <input class="full" type="text" id="reason" placeholder="Reason">
+                </div>
+                <br>
+                <button type="submit" class="btn">Save Leave Entry</button>
+            </form>
+        </div>
+
+        <!-- TABLE -->
+        <div class="card">
+            
+            <div class="table-head">
+            <h2>Recent Leave Entries</h2>
+            <input type="text" placeholder="Search..." onkeyup="searchTable(this.value)">
+             </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th>Room</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Type</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+
+                <tbody id="leaveTable">
+                    <tr>
+                        <td colspan="7" class="empty">No leave entries found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* =======================
+   FETCH LEAVE DATA
+   ======================= */
+
+async function fetchLeaves(){
+    try{
+        const response = await fetch("backend/get_leaves.php"); // backend API
+        const data = await response.json();
+
+        const table = document.getElementById("leaveTable");
+        table.innerHTML = "";
+
+        if(data.length === 0){
+            table.innerHTML = `<tr><td colspan="7" class="empty">No leave entries found</td></tr>`;
+            return;
+        }
+
+        data.forEach(lv => {
+            table.innerHTML += `
+            <tr>
+                <td>${lv.roll}</td>
+                <td>${lv.name}</td>
+                <td>${lv.room}</td>
+                <td>${lv.start_date}</td>
+                <td>${lv.end_date}</td>
+                <td><span class="badge ${lv.type.toLowerCase()}">${lv.type}</span></td>
+                <td>${lv.remarks}</td>
+            </tr>`;
+        });
+
+    }catch(err){
+        console.log("Fetch Error:", err);
+    }
+}
+
+/* =======================
+   SUBMIT LEAVE ENTRY
+   ======================= */
+
+document.getElementById("leaveForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const payload = {
+        name: name.value,
+        roll: roll.value,
+        room: room.value,
+        startDate: startDate.value,
+        endDate: endDate.value,
+        leaveType: leaveType.value,
+        remarks: remarks.value
+    };
+
+    try{
+        const response = await fetch("backend/add_leave.php",{
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+
+        if(res.status === "success"){
+            alert("Leave entry saved successfully");
+            document.getElementById("leaveForm").reset();
+            fetchLeaves();
+        }else{
+            alert("Failed to save leave entry");
+        }
+
+    }catch(err){
+        console.log("Submit Error:", err);
+    }
+});
+
+/* =======================
+   LOAD DATA ON PAGE LOAD
+   ======================= */
+
+fetchLeaves();
+</script>
+
+</body>
+</html>

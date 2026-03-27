@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hostel Biometric Attendance System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f2f4f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            padding: 30px 25px 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .logo-circle {
+            width: 100px;
+            height: 100px;
+            background: #6f8a6f;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-circle img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+
+        h1 {
+            margin: 5px 0 5px;
+            font-size: 22px;
+            color: #1f2d3d;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 10px 0 6px;
+            color: #374151;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: #6f8a6f;
+            box-shadow: 0 0 0 2px rgba(111,138,111,0.15);
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px;
+            background: #6f8a6f;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .btn:hover {
+            background: #5f7a5f;
+        }
+
+        footer {
+            margin-top: 25px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Green Circle Logo -->
+    <div class="logo-circle">
+        <img src="gbu logo.png" alt="GBU Logo">
+    </div>
+
+    <h1>Hostel Biometric Attendance System</h1>
+
+    <form action="login.php" method="POST">
+        <label>User Type</label>
+    <select name="user_type" required>
+    <option value="">Select user type</option>
+    <option>Admin</option>
+    <option>Cheif Warden</option>
+    <option>Hostel Warden</option>
+</select>
+
+<label>Username</label>
+<input type="text" name="username"
+placeholder="Enter your username" required>
+
+<label>Password</label>
+<input type="password" name="password"
+placeholder="Enter your password" required>
+
+        <button class="btn">Sign In</button>
+    </form>
+
+   
+
+    <footer>
+        © 2026 Hostel Biometric Attendance System. All rights reserved.
+    </footer>
+
+</div>
+
+<script>
+function togglePassword(){
+    let pwd=document.getElementById("password");
+    pwd.type = pwd.type==="password" ? "text" : "password";
+}
+
+</script>
+
+</body>
+</html>
